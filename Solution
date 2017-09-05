@@ -1,0 +1,227 @@
+#include <iostream>
+#include <iomanip>
+#include <stdio.h>
+#include <vector>
+
+int main() {
+	std::cout << "Hello, world!\n";
+}
+class FetchClass{
+protected:
+	std::vector<int>myArray;
+	std::vector<int> randArray(int size) {
+		std::vector<int> x;
+		int length = size;
+		for (int i = 0; i < length; i++){
+			x[i] = rand() % 100;
+		}
+		return x;
+	}
+
+public:
+	FetchClass() {
+		myArray = randArray(10);
+	}
+	void setArray(std::vector<int> a) {
+		myArray = a;
+	}
+	std::vector<int> getArray() {
+		return myArray;
+	}
+	void showArray() {
+		int length = sizeof(myArray);
+		std::cout << "[";
+		for (int i = 0; i < length; i++){
+			std::cout << myArray[i];
+			if (i + 1 < length) {
+				std::cout << ", ";
+			}
+		}
+		std::cout << "]";
+	}
+	void showArray(std::vector<int> a) {
+		int length = sizeof(myArray);
+		std::cout << "[";
+		for (int i = 0; i < length; i++) {
+			std::cout << a[i];
+			if (i + 1 < length) {
+				std::cout << ", ";
+			}
+		}
+		std::cout << "]";
+	}
+	
+};
+
+class SortClass {
+	protected:
+		void merge(std::vector<int> a, int i, int m, int f) {
+			int n1 = m - i + 1;
+			int n2 = f - m;
+			std::vector<int> L;
+			std::vector<int> R;
+			for (int b = 0; b < n1; b++) {
+				L[b] = a[i + b];
+			}
+			for (int c = 0; c < n2; c++) {
+				R[c] = a[m + 1 + c];
+			}
+			int j = 0, k = 0, l = 0;
+			do {
+				if (j < sizeof(L) && k < sizeof(R)) {
+					if (L[j] < R[k]) {
+						a[l] = L[j];
+						j++;
+					}
+					else {
+						a[l] = R[k];
+						k++;
+					}
+					l++;
+				}
+			} while (j < sizeof(L) && k < sizeof(R));
+			while (j < sizeof(L)) {
+				a[l] = L[j];
+				j++;
+				l++;
+			}
+			while (k < sizeof(R)){
+				a[l] = R[k];
+				k++;
+				l++;
+			}
+		}
+	public:
+		void seleccion(std::vector<int> a) {
+			int aux, min, length = sizeof(a);
+			for (int i = 0; i < length; i++){
+				min = i;
+				for (int j = 0; j < length; j++) {
+					if (a[min] > a[j]) {
+						min = j;
+					}
+				}
+				aux = a[min];
+				a[min] = a[i];
+				a[i] = aux;
+			}
+		}
+		void insercion(std::vector<int> a) {
+			int aux, j, length = sizeof(a);
+			for (int i = 0; i < length; i++) {
+				j = i;
+				while (a[j] > 0 && a[j] < a[j - 1]) {
+					aux = a[j];
+					a[j] = a[j - 1];
+					a[j - 1] = aux;
+				}
+			}
+		}
+		void bubble(std::vector<int> a) {
+			int aux;
+			for (int i = 0; i < sizeof(a); i++) {
+				for (int j = 0; j < sizeof(a); j++) {
+					if (a[j] > a[j + 1]) {
+						aux = a[j];
+						a[j] = a[j + 1];
+						a[j + 1] = aux;
+					}
+				}
+			}
+		}
+		void quicksort(std::vector<int> a, int i, int f) {
+			int j, k, pibote, aux;
+			j = i;
+			k = f;
+			pibote = a[(i + f) / 2];
+			do {
+				while (a[j] < pibote) {
+					j++;
+				}
+				while (pibote < a[k]) {
+					k--;
+				}
+				if (j <= k) {
+					aux = a[k];
+					a[k] = a[j];
+					a[j] = aux;
+				}
+			} while (j <= k);
+			if (k < i) {
+				quicksort(a, i, k);
+			}
+			if (f < j) {
+				quicksort(a, j, f);
+			}
+		}
+		void mergesort(std::vector<int> a, int i, int f) {
+			if (i < f) {
+				int medio = ((i + f) / 2);
+				mergesort(a, i, medio);
+				mergesort(a, medio + 1, f);
+				merge(a, i, medio, f);
+			}
+		}
+};
+class SecClass : public FetchClass {
+	public:
+		void showFetch(int position) const{
+			std::cout << "El valor en la posicion " << position << " es " << myArray[position];
+		}
+		SecClass (){
+			FetchClass();
+		}
+		int sFetch(int e) {
+			for (int i = 0; i < sizeof(myArray); i++) {
+				if (e == myArray[i]) {
+					return i;
+				}
+			}
+			return -1;
+		}
+		static int sFetch(std::vector<int> a, int e) {
+			for (int i = 0; i < sizeof(a); i++) {
+				if (e == a[i]) {
+					return i;
+				}
+			}
+			return -1;
+		}
+};
+
+class BinClass : public FetchClass, public SortClass {
+	BinClass() {
+		FetchClass();
+	}
+	int bFetch(int e) {
+		int i = 0, f = sizeof(myArray), mid;
+		while (i < f) {
+			mid = (i + f) / 2;
+			if (myArray[mid] == e) {
+				return mid;
+			}
+			if (myArray[mid] > e) {
+				f = mid - 1;
+			} else {
+				i = mid + 1;
+			}
+			return -1;
+		}
+	}
+	int bFetch(std::vector<int> a,  int e) {
+		int i = 0, f = sizeof(a), mid;
+		while (i < f) {
+			mid = (i + f) / 2;
+			if (a[mid] == e) {
+				return mid;
+			}
+			if (a[mid] > e) {
+				f = mid - 1;
+			}
+			else {
+				i = mid + 1;
+			}
+			return -1;
+		}
+	}
+};
